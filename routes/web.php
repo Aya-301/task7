@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Mailsend;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +17,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::group(
+    [
+        'prefix' => LaravelLocalization::setLocale(),
+        'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
+    ], function(){
 
 Route::get('test',function(){
     return view('test');
@@ -32,3 +38,11 @@ Route::get('gaurds',function(){
 Route::get('contactUs',function(){
     return view('contactUs');
 })->name('contact');
+    });
+Auth::routes(['verify'=>true]);
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('mail',function(){
+    return view('sendmail');
+});
+Route::post('sendmail',[Mailsend::class,'send'])->name('sendmail');
